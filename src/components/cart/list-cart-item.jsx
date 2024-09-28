@@ -12,8 +12,8 @@ const ListCartItem = () => {
 
   console.log(cartItems);
   return (
-    <ScrollArea scroll className='whitespace-nowrap rounded-md border'>
-      <ul className='flex flex-col gap-8 mt-4 max-h-[70vh]'>
+    <ScrollArea scroll className='whitespace-nowrap rounded-md border '>
+      <ul className='flex flex-col gap-8 mt-4 max-h-[70vh] max-w-[70vh]'>
         {cartItems?.map((item, index) => (
           <CartItem
             item={item}
