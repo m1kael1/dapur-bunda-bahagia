@@ -2,28 +2,39 @@ import nasiGoreng from "@/assets/nasi-goreng.jpeg";
 import Image from "next/image";
 import { Minus, Plus, X } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import { useState } from "react";
+import { formatCurrency } from "@/lib/utils";
 
-const CartItem = () => {
+const CartItem = ({ item, addQuantity, removeQuantity, removeChartItem }) => {
+  const { id, name, totalPrice, quantity, image } = item;
   return (
     <section className='flex flex-col gap-4 mx-4 relative'>
-      <X className='absolute top-0 right-0 w-4 h-4' color='red' />
-      <div className='flex gap-2 items-center'>
+      <Button
+        className='absolute top-0 right-0'
+        onClick={() => removeChartItem(id)}
+        variant='ghost'
+        size='icon'
+      >
+        <X className='w-4 h-4' color='red' />
+      </Button>
+      <div className='flex gap-4 items-center mt-4'>
         <Image
-          src={nasiGoreng}
-          className='rounded-lg'
+          src={image}
+          className='rounded-lg w-[120px] h-[120px] object-cover object-center'
           width={120}
           height={120}
-          alt='Nasi Goreng'
+          alt={name}
         />
-        <div className=''>
-          <h3 className='text-md'>Nasi Goreng</h3>
-          <p className='text-sm'>Rp. 10.000</p>
-        </div>
-        <br />
-        <div className='flex gap-4 items-center'>
-          <Plus className='w-4 h-4' />
-          <p>0</p>
-          <Minus className='w-4 h-4' />
+        <div className='w-full flex flex-col gap-1'>
+          <h3 className='text-md font-bold'>{name}</h3>
+          <p className='text-md'>{formatCurrency(totalPrice)}</p>
+          <QuantityCounter
+            quantity={quantity}
+            removeQuantity={removeQuantity}
+            addQuantity={addQuantity}
+            id={id}
+          />
         </div>
       </div>
       <Separator orientation='horizontal' color='black' />
@@ -32,3 +43,40 @@ const CartItem = () => {
 };
 
 export default CartItem;
+
+const QuantityCounter = (props) => {
+  const [quantity, setQuantity] = useState(props.quantity);
+
+  const handleQuantityChange = (mode) => {
+    if (mode === "plus") {
+      setQuantity((prev) => prev + 1);
+      props.addQuantity(props.id);
+    } else if (mode === "minus") {
+      setQuantity((prev) => prev - 1);
+      props.removeQuantity(props.id);
+      if (quantity === 0) {
+        setQuantity(0);
+      }
+    }
+  };
+
+  return (
+    <div className='flex gap-4 items-center justify-between'>
+      <Button
+        onClick={() => handleQuantityChange("minus")}
+        variant='ghost'
+        size='icon'
+      >
+        <Minus className='w-4 h-4' />
+      </Button>
+      <p>{quantity}</p>
+      <Button
+        onClick={() => handleQuantityChange("plus")}
+        variant='ghost'
+        size='icon'
+      >
+        <Plus className='w-4 h-4' />
+      </Button>
+    </div>
+  );
+};

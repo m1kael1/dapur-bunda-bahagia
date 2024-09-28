@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sheet,
   SheetContent,
@@ -10,13 +12,26 @@ import {
 import { ShoppingCart } from "lucide-react";
 import ListCartItem from "./list-cart-item";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { formatCurrency } from "@/lib/utils";
+import useCart from "@/hooks/use-cart";
+import { useEffect, useState } from "react";
 
 const SheetCart = () => {
+  const { data: cartItems, trigger } = useCart();
+  const [totalPrice, setTotalPrice] = useState();
+
+  useEffect(() => {
+    const total = cartItems.reduce((acc, item) => {
+      return acc + item.totalPrice;
+    }, 0);
+    setTotalPrice(total);
+  }, [cartItems, trigger]);
+
   return (
     <Sheet>
-      <SheetTrigger className='flex items-center gap-2'>
+      <SheetTrigger>
         <ShoppingCart className='w-6 h-6' />
-        <p>Cart</p>
       </SheetTrigger>
       <SheetContent side='right' className='w-[400px]'>
         <SheetHeader>
@@ -26,11 +41,15 @@ const SheetCart = () => {
               <h3>Cart</h3>
             </div>
           </SheetTitle>
-          <SheetDescription>View your cart.</SheetDescription>
+          <SheetDescription className='text-center'>
+            View your cart.
+          </SheetDescription>
         </SheetHeader>
-        <ul>
-          <ListCartItem />
-        </ul>
+
+        <ListCartItem />
+
+        <br />
+        <h3 className='text-xl font-bold'>{formatCurrency(totalPrice)}</h3>
         <br />
         <SheetFooter>
           <Button className='w-full'>Checkout</Button>
