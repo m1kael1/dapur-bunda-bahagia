@@ -9,11 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import useProduct from "@/hooks/use-product";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAtom } from "jotai";
+import { productSearchTermAtom } from "@/lib/atoms";
 
 const FilterProduct = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useAtom(productSearchTermAtom);
   const categoryParams = useSearchParams().get("category");
   const router = useRouter();
 

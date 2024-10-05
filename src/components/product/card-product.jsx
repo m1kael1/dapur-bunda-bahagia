@@ -7,17 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import nasiGoreng from "@/assets/nasi-goreng.jpeg";
 import { formatCurrency } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import useCart from "@/hooks/use-cart";
 
 const CardProduct = ({ product }) => {
   const { id, name, description, price, image, category } = product;
-  const { addCartItem } = useCart();
+  const { addToCart } = useCart();
 
   return (
-    <Card >
+    <Card>
       <div className='w-full'>
         <Image
           src={image}
@@ -39,7 +38,7 @@ const CardProduct = ({ product }) => {
 
       <CardFooter className='flex justify-between'>
         <div className='text-foreground font-bold'>{formatCurrency(price)}</div>
-        <Button onClick={() => addCartItem(product)}>Add to cart</Button>
+        <Button onClick={() => addToCart(product)}>Add to cart</Button>
       </CardFooter>
     </Card>
   );

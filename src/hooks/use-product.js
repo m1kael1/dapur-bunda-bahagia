@@ -1,11 +1,13 @@
 "use client";
 
+import { productsAtom } from "@/lib/atoms";
 import { findAllProduct } from "@/utils/db/service";
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
 
 export default function useProduct(id) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useAtom(productsAtom);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,5 +37,4 @@ export default function useProduct(id) {
     error,
     isLoading
   }
-
 };

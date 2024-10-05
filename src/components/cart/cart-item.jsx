@@ -1,18 +1,21 @@
-import nasiGoreng from "@/assets/nasi-goreng.jpeg";
 import Image from "next/image";
 import { Minus, Plus, X } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatCurrency } from "@/lib/utils";
+import useCart from "@/hooks/use-cart";
 
-const CartItem = ({ item, addQuantity, removeQuantity, removeChartItem }) => {
-  const { id, name, totalPrice, quantity, image } = item;
+const CartItem = ({ item }) => {
+  const { removeFromCart, addQuantity, removeQuantity } = useCart();
+  const { id, name, price, quantity, image } = item;
   return (
     <section className='flex flex-col gap-4 mx-4 relative'>
       <Button
         className='absolute top-0 right-0'
-        onClick={() => removeChartItem(id)}
+        onClick={() => {
+          removeFromCart(item);
+        }}
         variant='ghost'
         size='icon'
       >
@@ -28,11 +31,11 @@ const CartItem = ({ item, addQuantity, removeQuantity, removeChartItem }) => {
         />
         <div className='w-full flex flex-col gap-1'>
           <h3 className='text-md font-bold'>{name}</h3>
-          <p className='text-md'>{formatCurrency(totalPrice)}</p>
+          <p className='text-md'>{formatCurrency(price * quantity)}</p>
           <QuantityCounter
-            quantity={quantity}
-            removeQuantity={removeQuantity}
             addQuantity={addQuantity}
+            removeQuantity={removeQuantity}
+            quantity={quantity}
             id={id}
           />
         </div>
@@ -44,19 +47,12 @@ const CartItem = ({ item, addQuantity, removeQuantity, removeChartItem }) => {
 
 export default CartItem;
 
-const QuantityCounter = (props) => {
-  const [quantity, setQuantity] = useState(props.quantity);
-
+const QuantityCounter = ({ quantity, addQuantity, removeQuantity, id }) => {
   const handleQuantityChange = (mode) => {
     if (mode === "plus") {
-      setQuantity((prev) => prev + 1);
-      props.addQuantity(props.id);
+      addQuantity(id);
     } else if (mode === "minus") {
-      setQuantity((prev) => prev - 1);
-      props.removeQuantity(props.id);
-      if (quantity === 0) {
-        setQuantity(0);
-      }
+      removeQuantity(id);
     }
   };
 
